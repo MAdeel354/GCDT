@@ -39,14 +39,10 @@ def train(data_t1, data_t2, lambda_cycle=10):
 
     # T2
     pred_real = discriminator_t2(data_t2)
-    # loss_t2_real = criterion_GAN(pred_real, data_t2.x)
-    loss_t2_real = criterion_GAN(pred_real, torch.ones_like(pred_real))
-    # loss_t2_real = criterion_GAN(pred_real, data_t2.x) + (1 - pearson_coor(pred_real, data_t2.x))
-
+    loss_t2_real = adversarial_loss(pred_real, torch.ones_like(pred_real))
+    
     pred_fake = discriminator_t2(fake_t2.detach())
-    # loss_t2_fake = criterion_GAN(pred_fake, data_t2.x) + (1 - pearson_coor(pred_fake, data_t2.x))
-    # loss_t2_fake = criterion_GAN(pred_fake, data_t2.x)
-    loss_t2_fake = criterion_GAN(pred_fake, torch.zeros_like(pred_fake))
+    loss_t2_fake = adversarial_loss(pred_fake, torch.zeros_like(pred_fake))
 
 
     loss_D_B = (loss_t2_real + loss_t2_fake)*0.5
@@ -57,12 +53,10 @@ def train(data_t1, data_t2, lambda_cycle=10):
 
     # T1
     pred_real = discriminator_t1(data_t1)
-    loss_t1_real = criterion_GAN(pred_real, torch.ones_like(pred_real))
+    loss_t1_real = adversarial_loss(pred_real, torch.ones_like(pred_real))
 
     pred_fake = discriminator_t1(fake_t1.detach())
-    # loss_t2_fake = criterion_GAN(pred_fake, data_t2.x) + (1 - pearson_coor(pred_fake, data_t2.x))
-    # loss_t2_fake = criterion_GAN(pred_fake, data_t2.x)
-    loss_t1_fake = criterion_GAN(pred_fake, torch.zeros_like(pred_fake))
+    loss_t1_fake = adversarial_loss(pred_fake, torch.zeros_like(pred_fake))
 
 
     loss_D_A = (loss_t1_real + loss_t1_fake)*0.5
@@ -107,6 +101,8 @@ optimizer_D_t2 = torch.optim.Adam(discriminator_t2.parameters(), lr=0.0001, weig
 optimizer_D_t1 = torch.optim.Adam(discriminator_t1.parameters(), lr=0.0001, weight_decay=1e-4)
 
 criterion_GAN = torch.nn.L1Loss()
+adversarial_loss = torch.nn.BCELoss()
+
 train_loader, test_loader = return_dataset_all(batch_size=1)
 vals = []
 
