@@ -18,5 +18,5 @@ contribution to predicting unpaired longitudinal brain connectivity. The
 experiment has shown promising results in designing a framework for
 brain connectivity predictions.
 
-![proposed architecture](./figure/architecture.png)
+![proposed architecture](./Figures/architecture.png)
 
